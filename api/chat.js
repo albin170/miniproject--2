@@ -11,17 +11,20 @@ export default async function handler(req, res) {
 
   try {
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${process.env.GEMINI_API_KEY}`,
+      `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
       {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json"
+        },
         body: JSON.stringify({
           contents: [
             {
+              role: "user",
               parts: [
                 {
                   text:
-                    "You are a rural healthcare assistant. Give simple, safe medical advice and recommend seeing a doctor if symptoms are serious.\n\nPatient symptoms: " +
+                    "You are a rural healthcare assistant. Give simple, safe medical advice and suggest consulting a doctor if symptoms are serious.\n\nPatient symptoms: " +
                     symptoms
                 }
               ]
@@ -32,13 +35,20 @@ export default async function handler(req, res) {
     );
 
     const data = await response.json();
-    const reply = data.candidates?.[0]?.content?.parts?.[0]?.text;
 
-    res.status(200).json({
-      reply: reply || "Unable to generate response"
+    // ✅ SAFE extraction
+    const reply =
+      data.candidates &&
+      data.candidates.length > 0 &&
+      data.candidates[0].content &&
+      data.candidates[0].content.parts &&
+      data.candidates[0].content.parts[0].text;
+
+    return res.status(200).json({
+      reply: reply || "AI could not generate a response. Please consult a healthcare professional."
     });
 
   } catch (error) {
-    res.status(500).json({ error: "AI service error" });
+    return res.status(500).json({ error: "AI service error" });
   }
 }
