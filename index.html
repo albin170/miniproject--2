@@ -1,39 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>AI Rural Healthcare Assistant</title>
-<link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Rural Healthcare Assistant</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header>
-<h1>🩺 AI Rural Healthcare Assistant</h1>
-<p>Basic health guidance for rural communities</p>
-</header>
 
+  <header>
+    <h1>🩺 AI Rural Healthcare Assistant</h1>
+    <p>AI-based basic health guidance</p>
+  </header>
 
-<main class="container">
-<div class="card">
-<h2>Describe your symptoms</h2>
-<textarea id="symptoms" placeholder="Example: fever, headache, cough for 2 days"></textarea>
-<button onclick="analyzeSymptoms()">Get AI Advice</button>
-<div id="result" class="output"></div>
-</div>
+  <main class="container">
+    <div class="card">
+      <h2>Describe your symptoms</h2>
+      <textarea id="symptoms" placeholder="Example: fever, cough, headache"></textarea>
+      <button onclick="analyzeSymptoms()">Get AI Advice</button>
+      <div id="result" class="output"></div>
+    </div>
+  </main>
 
+  <footer>
+    ⚠️ Educational purpose only. Not a replacement for a doctor.
+  </footer>
 
-<div class="card">
-<h2>Emergency Information</h2>
-<p>If symptoms are severe (chest pain, heavy bleeding, unconsciousness), immediately visit the nearest hospital.</p>
-</div>
-</main>
-
-
-<footer>
-⚠️ Educational purpose only. Not a replacement for a doctor.
-</footer>
-
-
-<script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
+
