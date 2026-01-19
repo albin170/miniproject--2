@@ -14,9 +14,7 @@ export default async function handler(req, res) {
       `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
       {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           contents: [
             {
@@ -24,31 +22,41 @@ export default async function handler(req, res) {
               parts: [
                 {
                   text:
-                    "You are a rural healthcare assistant. Give simple, safe medical advice and suggest consulting a doctor if symptoms are serious.\n\nPatient symptoms: " +
-                    symptoms
+                    "You are a healthcare information assistant for rural areas. " +
+                    "Do NOT give diagnosis or prescriptions. " +
+                    "Only provide general health advice, home care tips, and clearly suggest consulting a doctor.\n\n" +
+                    "Symptoms: " + symptoms
                 }
               ]
             }
-          ]
+          ],
+          generationConfig: {
+            temperature: 0.7,
+            maxOutputTokens: 200
+          }
         })
       }
     );
 
     const data = await response.json();
 
-    // ✅ SAFE extraction
-    const reply =
-      data.candidates &&
-      data.candidates.length > 0 &&
-      data.candidates[0].content &&
-      data.candidates[0].content.parts &&
-      data.candidates[0].content.parts[0].text;
+    // 🔍 DEBUG SAFETY (optional)
+    if (!data.candidates || data.candidates.length === 0) {
+      return res.status(200).json({
+        reply:
+          "Based on your symptoms, please take rest, stay hydrated, and consult the nearest healthcare professional for proper evaluation."
+      });
+    }
 
-    return res.status(200).json({
-      reply: reply || "AI could not generate a response. Please consult a healthcare professional."
-    });
+    const reply = data.candidates[0].content.parts[0].text;
+
+    return res.status(200).json({ reply });
 
   } catch (error) {
-    return res.status(500).json({ error: "AI service error" });
+    return res.status(500).json({
+      reply:
+        "Unable to connect to AI service. Please consult a healthcare professional."
+    });
   }
 }
+
