@@ -1,4 +1,4 @@
-const OPENAI_API_KEY = "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";
+const OPENAI_API_KEY = "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";
 
 
 async function analyzeSymptoms(){
