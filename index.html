@@ -2,31 +2,19 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI Rural Healthcare Assistant</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Rural Healthcare AI Assistant</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-  <header>
-    <h1>🩺 AI Rural Healthcare Assistant</h1>
-    <p>AI-based basic health guidance</p>
-  </header>
+  <h2>Rural Healthcare AI Assistant</h2>
 
-  <main class="container">
-    <div class="card">
-      <h2>Describe your symptoms</h2>
-      <textarea id="symptoms" placeholder="Example: fever, cough, headache"></textarea>
-      <button onclick="analyzeSymptoms()">Get AI Advice</button>
-      <div id="result" class="output"></div>
-    </div>
-  </main>
+  <textarea id="symptoms" placeholder="Enter your symptoms"></textarea>
+  <br />
+  <button onclick="askAI()">Get Advice</button>
 
-  <footer>
-    ⚠️ Educational purpose only. Not a replacement for a doctor.
-  </footer>
+  <p id="response"></p>
 
   <script src="script.js"></script>
 </body>
 </html>
-
