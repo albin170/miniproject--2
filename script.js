@@ -1,15 +1,25 @@
-async function askAI() {
-  const symptoms = document.getElementById("symptoms").value;
-  const responseBox = document.getElementById("response");
+const API_KEY = "AizaSyDPKD5bZXPIhwwP5AqCo6RITpDIEsioyCM"; // Gemini key
 
-  responseBox.innerText = "Loading...";
+async function ask() {
+  const q = document.getElementById("q").value;
+  const out = document.getElementById("out");
+  out.innerText = "Thinking...";
 
-  const res = await fetch("/api/chat", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ symptoms })
-  });
+  const r = await fetch(
+    "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + API_KEY,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [{
+          parts: [{ text: "Give general advice only.\n" + q }]
+        }]
+      })
+    }
+  );
 
-  const data = await res.json();
-  responseBox.innerText = data.reply;
+  const j = await r.json();
+  out.innerText =
+    j?.candidates?.[0]?.content?.parts?.[0]?.text ||
+    "Please consult a healthcare professional.";
 }
