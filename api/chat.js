@@ -1,62 +1,53 @@
 export default async function handler(req, res) {
   if (req.method !== "POST") {
-    return res.status(405).json({ error: "Only POST allowed" });
+    return res.status(405).json({ reply: "Only POST allowed" });
   }
 
-  const { symptoms } = req.body;
+  const { symptoms } = req.body || {};
 
   if (!symptoms) {
-    return res.status(400).json({ error: "Symptoms required" });
+    return res.status(200).json({
+      reply: "Please describe your health issue clearly."
+    });
   }
 
   try {
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [
-            {
-              role: "user",
-              parts: [
-                {
-                  text:
-                    "You are a healthcare information assistant for rural areas. " +
-                    "Do NOT give diagnosis or prescriptions. " +
-                    "Only provide general health advice, home care tips, and clearly suggest consulting a doctor.\n\n" +
-                    "Symptoms: " + symptoms
-                }
-              ]
-            }
-          ],
-          generationConfig: {
-            temperature: 0.7,
-            maxOutputTokens: 200
+    const geminiURL =
+      "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=" +
+      process.env.GEMINI_API_KEY;
+
+    const geminiRes = await fetch(geminiURL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [
+          {
+            parts: [
+              {
+                text:
+                  "Answer the user's question simply and clearly. " +
+                  "Give general health guidance only.\n\nQuestion: " +
+                  symptoms
+              }
+            ]
           }
-        })
-      }
-    );
+        ]
+      })
+    });
 
-    const data = await response.json();
+    const data = await geminiRes.json();
 
-    // 🔍 DEBUG SAFETY (optional)
-    if (!data.candidates || data.candidates.length === 0) {
-      return res.status(200).json({
-        reply:
-          "Based on your symptoms, please take rest, stay hydrated, and consult the nearest healthcare professional for proper evaluation."
-      });
-    }
-
-    const reply = data.candidates[0].content.parts[0].text;
+    const reply =
+      data?.candidates?.[0]?.content?.parts?.[0]?.text ||
+      "Based on your question, please consult a nearby healthcare professional.";
 
     return res.status(200).json({ reply });
 
-  } catch (error) {
-    return res.status(500).json({
-      reply:
-        "Unable to connect to AI service. Please consult a healthcare professional."
+  } catch (err) {
+    return res.status(200).json({
+      reply: "Unable to reach AI service. Please try again later."
     });
   }
 }
+
 
