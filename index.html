@@ -1,20 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <title>Rural Healthcare AI Assistant</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>Rural Healthcare AI</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <h2>Rural Healthcare AI Assistant</h2>
+<h2>Rural Healthcare AI Assistant</h2>
 
-  <textarea id="symptoms" placeholder="Enter your symptoms"></textarea>
-  <br />
-  <button onclick="askAI()">Get Advice</button>
+<textarea id="q" placeholder="Ask your health question"></textarea><br><br>
+<button onclick="ask()">Ask AI</button>
 
-  <p id="response"></p>
+<p id="out"></p>
 
-  <script src="script.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
