@@ -1,4 +1,4 @@
-const API_KEY = "AizaSyDPKD5bZXPIhwwP5AqCo6RITpDIEsioyCM"; // Gemini key
+const API_KEY = "AIzaSyCdyMmsY-WPBqb-KJjIqxA1Gy0qfTcDRLI"; // Gemini key
 
 async function ask() {
   const q = document.getElementById("q").value;
