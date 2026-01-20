@@ -5,6 +5,12 @@ export default async function handler(req, res) {
 
   const { symptoms } = req.body || {};
 
+  if (!symptoms || symptoms.trim() === "") {
+    return res.status(200).json({
+      reply: "Please describe your symptoms clearly."
+    });
+  }
+
   try {
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
@@ -13,8 +19,11 @@ export default async function handler(req, res) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           contents: [{
+            role: "user",
             parts: [{
-              text: "Answer clearly:\n" + symptoms
+              text:
+                "Give simple general health advice (not diagnosis). " +
+                "Answer clearly.\n\nQuestion: " + symptoms
             }]
           }]
         })
@@ -23,15 +32,26 @@ export default async function handler(req, res) {
 
     const data = await response.json();
 
-    const reply =
-      data?.candidates?.[0]?.content?.parts?.[0]?.text ||
-      "Please consult a nearby healthcare professional for proper guidance.";
+    // 🔥 LOGIC FIX (important)
+    let reply = "Please consult a nearby healthcare professional for proper guidance.";
 
-    res.status(200).json({ reply });
+    if (
+      data &&
+      data.candidates &&
+      data.candidates.length > 0 &&
+      data.candidates[0].content &&
+      data.candidates[0].content.parts &&
+      data.candidates[0].content.parts.length > 0
+    ) {
+      reply = data.candidates[0].content.parts[0].text;
+    }
 
-  } catch (err) {
-    res.status(200).json({
-      reply: "AI service error. Try again later."
+    return res.status(200).json({ reply });
+
+  } catch (error) {
+    return res.status(200).json({
+      reply: "AI service temporarily unavailable."
     });
   }
 }
+
